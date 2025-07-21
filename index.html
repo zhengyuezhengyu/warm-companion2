@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>暖心陪伴 - 心情记录与安慰应用</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 95vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+            margin-right: 12px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .mood-section {
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            background: #f9fbfd;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #4fd1c5;
+        }
+
+        .mood-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mood-option {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .mood-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .mood-option.active {
+            border-color: #4fd1c5;
+            background: #f0fffc;
+        }
+
+        .mood-option i {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .mood-option.happy i { color: #f6ad55; }
+        .mood-option.calm i { color: #63b3ed; }
+        .mood-option.sad i { color: #90cdf4; }
+        .mood-option.anxious i { color: #f56565; }
+        .mood-option.angry i { color: #e53e3e; }
+        .mood-option.tired i { color: #a0aec0; }
+
+        .mood-option span {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-size: 0.95rem;
+            resize: none;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4fd1c5;
+        }
+
+        .btn {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(133, 249, 176, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(133, 249, 176, 0.4);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .history-section {
+            padding: 20px 15px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #edf2f7;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 8px;
+        }
+
+        .history-item {
+            background: #f9fbfd;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid #4fd1c5;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+        }
+
+        .history-item.collapsed .history-content {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 4.5em;
+        }
+
+        .toggle-content-btn {
+            background: none;
+            border: none;
+            color: #4fd1c5;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .toggle-content-btn i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-content-btn.expanded i {
+            transform: rotate(180deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .mood-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .mood-indicator i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .history-content {
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 30px 15px;
+            color: #a0aec0;
+        }
+
+        .no-history i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .no-history p {
+            font-size: 1rem;
+        }
+
+        .comfort-section {
+            background: linear-gradient(120deg, #fff9db 0%, #fff3bf 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #ffec99;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 212, 59, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 212, 59, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 212, 59, 0); }
+        }
+
+        .comfort-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #e67700;
+        }
+
+        .comfort-header i {
+            font-size: 1.6rem;
+            margin-right: 10px;
+        }
+
+        .comfort-message {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #5c3c00;
+        }
+
+        .comfort-message p {
+            margin-bottom: 8px;
+        }
+
+        .generate-btn {
+            background: #ffd43b;
+            color: #5c3c00;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            background: #fcc419;
+            transform: translateY(-2px);
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            margin-right: 10px;
+            min-width: 150px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4fd1c5;
+            box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .filter-btn {
+            background: #edf2f7;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .filter-btn i {
+            margin-right: 5px;
+        }
+
+        .history-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .show-more-btn {
+            background: #4fd1c5;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .show-more-btn:hover {
+            background: #38b2ac;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #718096;
+            font-size: 0.85rem;
+            border-top: 1px solid #edf2f7;
+            background: #f9fbfd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .share-btn {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .share-btn:hover {
+            background: #5d4fd0;
+            transform: translateY(-2px);
+        }
+
+        /* 删除按钮样式 */
+        .delete-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .delete-all-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .delete-all-btn:hover {
+            background: #e53e3e;
+        }
+
+        .history-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* 确认删除弹窗样式 */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            position: relative;
+            text-align: center;
+        }
+
+        .confirm-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #e53e3e;
+        }
+
+        .confirm-header i {
+            font-size: 2.2rem;
+            margin-right: 10px;
+        }
+
+        .confirm-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .confirm-message {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .confirm-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .confirm-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .confirm-cancel:hover {
+            background: #cbd5e0;
+        }
+
+        .confirm-delete {
+            background: #f56565;
+            color: white;
+        }
+
+        .confirm-delete:hover {
+            background: #e53e3e;
+        }
+
+        /* 微信兼容性修复 */
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            .history-list {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                min-height: 100vh;
+                height: auto;
+            }
+
+            .container {
+                max-height: none;
+                height: auto;
+                min-height: 95vh;
+            }
+
+            .main-content {
+                flex-direction: column;
+                overflow: visible;
+            }
+
+            .history-section {
+                border-left: none;
+                border-top: 1px solid #edf2f7;
+            }
+
+            .mood-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .history-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                margin-right: 0;
+                margin-bottom: 10px;
+                min-width: auto;
+            }
+
+            .history-actions {
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+
+            .delete-all-btn {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mood-selector {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .mood-option {
+                padding: 12px 8px;
+            }
+
+            .mood-option i {
+                font-size: 1.8rem;
+            }
+
+            .btn, .generate-btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+
+            .comfort-section {
+                padding: 15px;
+            }
+
+            .history-section, .mood-section {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* 分享弹窗样式 */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .share-title {
+            font-size: 1.4rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+        }
+
+        .share-title i {
+            margin-right: 10px;
+            color: #6c5ce7;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #a0aec0;
+        }
+
+        .share-url-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .share-url {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px 0 0 12px;
+            font-size: 0.85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: #4fd1c5;
+            color: white;
+            border: none;
+            padding: 0 18px;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #38b2ac;
+        }
+
+        .share-options {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .share-option {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .share-option:hover {
+            transform: translateY(-5px);
+        }
+
+        .share-wechat {
+            background: #2aae67;
+        }
+
+        .share-qq {
+            background: #12b7f5;
+        }
+
+        .share-weibo {
+            background: #e6162d;
+        }
+
+        .share-link {
+            background: #6c5ce7;
+        }
+
+        .share-note {
+            text-align: center;
+            margin-top: 15px;
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-heart"></i>
+                <div>
+                    <h1>暖心陪伴</h1>
+                    <div class="subtitle">记录你的心情，获取温暖安慰</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="mood-section">
+                <div class="section-title">
+                    <i class="fas fa-smile"></i>
+                    <h2>记录此刻心情</h2>
+                </div>
+
+                <div class="mood-selector">
+                    <div class="mood-option happy" data-mood="happy">
+                        <i class="fas fa-laugh-beam"></i>
+                        <span>开心</span>
+                    </div>
+                    <div class="mood-option calm" data-mood="calm">
+                        <i class="fas fa-meh"></i>
+                        <span>平静</span>
+                    </div>
+                    <div class="mood-option sad" data-mood="sad">
+                        <i class="fas fa-sad-tear"></i>
+                        <span>难过</span>
+                    </div>
+                    <div class="mood-option anxious" data-mood="anxious">
+                        <i class="fas fa-flushed"></i>
+                        <span>焦虑</span>
+                    </div>
+                    <div class="mood-option angry" data-mood="angry">
+                        <i class="fas fa-angry"></i>
+                        <span>生气</span>
+                    </div>
+                    <div class="mood-option tired" data-mood="tired">
+                        <i class="fas fa-tired"></i>
+                        <span>疲惫</span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <i class="fas fa-edit"></i>
+                    <h2>心情日记</h2>
+                </div>
+
+                <textarea id="mood-journal" placeholder="今天发生了什么？是什么让你有这样的感受？"></textarea>
+
+                <button class="btn" id="save-btn">
+                    <i class="fas fa-save"></i>
+                    保存心情记录
+                </button>
+
+                <div class="comfort-section">
+                    <div class="comfort-header">
+                        <i class="fas fa-hands-helping"></i>
+                        <h3>暖心安慰</h3>
+                    </div>
+                    <div class="comfort-message" id="comfort-message">
+                        <p>亲爱的朋友，无论你此刻感受如何，请记住：你的感受都是合理的，也是暂时的。</p>
+                        <p>深呼吸，给自己一点时间和空间，你比自己想象的更坚强。</p>
+                    </div>
+                    <button class="generate-btn" id="comfort-btn">
+                        <i class="fas fa-redo"></i>
+                        获取更多安慰
+                    </button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <div class="history-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="搜索历史记录...">
+                    </div>
+                    <div class="history-actions">
+                        <button class="filter-btn" id="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            筛选
+                        </button>
+                        <button class="delete-all-btn" id="delete-all-btn">
+                            <i class="fas fa-trash-alt"></i>
+                            清空记录
+                        </button>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <i class="fas fa-history"></i>
+                    <h2>心情历史</h2>
+                </div>
+
+                <div class="history-list" id="history-list">
+                    <div class="no-history">
+                        <i class="fas fa-book-open"></i>
+                        <p>还没有心情记录<br>开始记录你的心情吧</p>
+                    </div>
+                </div>
+
+                <div class="history-footer">
+                    <div class="history-count" id="history-count">共 0 条记录</div>
+                    <button class="show-more-btn" id="show-more-btn" style="display: none;">
+                        <i class="fas fa-chevron-down"></i>
+                        显示更多
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>暖心陪伴 © 2023 | 你的情感值得被看见和关心</p>
+            <button class="share-btn" id="share-btn">
+                <i class="fas fa-share-alt"></i> 分享我的心情记录
+            </button>
+        </footer>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div class="confirm-modal" id="confirm-modal">
+        <div class="confirm-content">
+            <div class="confirm-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3 class="confirm-title">确认删除</h3>
+            </div>
+            <div class="confirm-message" id="confirm-message">
+                您确定要删除这条心情记录吗？此操作不可撤销。
+            </div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-cancel" id="confirm-cancel">取消</button>
+                <button class="confirm-btn confirm-delete" id="confirm-delete">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 清空确认弹窗 -->
+    <div class="confirm-modal" id="confirm-all-modal">
+        <div class="confirm-content">
+            <div class="confirm-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3 class="confirm-title">清空记录</h3>
+            </div>
+            <div class="confirm-message">
+                您确定要清空所有心情记录吗？此操作将永久删除所有记录且不可撤销。
+            </div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-cancel" id="confirm-all-cancel">取消</button>
+                <button class="confirm-btn confirm-delete" id="confirm-all-delete">确认清空</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享弹窗 -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-content">
+            <div class="share-header">
+                <h3 class="share-title"><i class="fas fa-link"></i> 分享心情记录</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+
+            <p>复制以下链接分享给朋友，他们将能看到你分享的心情记录：</p>
+
+            <div class="share-url-container">
+                <div class="share-url" id="share-url">生成中...</div>
+                <button class="copy-btn" id="copy-btn">复制</button>
+            </div>
+
+            <div class="share-options">
+                <div class="share-option share-wechat" title="微信分享">
+                    <i class="fab fa-weixin"></i>
+                </div>
+                <div class="share-option share-qq" title="QQ分享">
+                    <i class="fab fa-qq"></i>
+                </div>
+                <div class="share-option share-weibo" title="微博分享">
+                    <i class="fab fa-weibo"></i>
+                </div>
+                <div class="share-option share-link" title="复制链接">
+                    <i class="fas fa-link"></i>
+                </div>
+            </div>
+
+            <div class="share-note">
+                <p>此链接永久有效，但不会实时更新你的新记录</p>
+                <p>每次分享会生成新的链接</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 安慰语库
+        const comfortMessages = {
+            happy: [
+                "看到你开心，我的心情也跟着好起来了！继续保持这份好心情吧！",
+                "真为你感到高兴！快乐是会传染的，把你的好心情分享给身边的人吧！",
+                "生活中的小确幸值得好好珍惜，享受这美好的时刻吧！",
+                "你的笑容是世界上最美的风景，愿快乐永远陪伴着你！"
+            ],
+            calm: [
+                "平静是一种难得的状态，享受此刻的安宁吧。",
+                "宁静致远，此刻的平静正是你与自己对话的好时机。",
+                "在喧嚣的世界中找到平静，这本身就是一种智慧。",
+                "平静的心境是智慧的源泉，好好珍惜这份宁静。"
+            ],
+            sad: [
+                "难过的时候，请允许自己流泪，但不要忘记你值得被爱。",
+                "我理解你的悲伤，请记住：再深的黑夜也会迎来黎明。",
+                "你的感受很重要，难过是暂时的，而你比这更坚强。",
+                "悲伤是心灵的雨，雨后总会有彩虹。我在这里陪伴你。"
+            ],
+            anxious: [
+                "焦虑是暂时的，深呼吸，感受此刻的存在。",
+                "你比自己想象的更强大，这些担忧终会过去。",
+                "试着关注当下，一次只做一件事，你已经做得很好了。",
+                "焦虑只是你心灵发出的信号，提醒你该关爱自己了。"
+            ],
+            angry: [
+                "愤怒是正常的情绪，试着深呼吸，给自己一点空间。",
+                "你的感受完全合理，但不要让怒火控制你的心。",
+                "愤怒之下往往藏着受伤的心，请温柔对待自己。",
+                "试着将愤怒转化为力量，但不要忘记宽恕自己。"
+            ],
+            tired: [
+                "疲惫的时候，请允许自己休息，你值得被温柔以待。",
+                "身体在提醒你需要休息了，给自己一点喘息的空间吧。",
+                "暂时的休息不是逃避，而是为了走更远的路。",
+                "你已经很努力了，现在是时候好好照顾自己了。"
+            ],
+            default: [
+                "无论你正在经历什么，请记住：你并不孤单。",
+                "每一天都是新的开始，每一个困难都是成长的机会。",
+                "你的价值不在于成就，而在于你本身的存在。",
+                "生活中的美好正在悄然发生，请保持期待。",
+                "你比自己想象的更坚强、更有韧性。"
+            ]
+        };
+
+        // 心情图标映射
+        const moodIcons = {
+            happy: "fa-laugh-beam",
+            calm: "fa-meh",
+            sad: "fa-sad-tear",
+            anxious: "fa-flushed",
+            angry: "fa-angry",
+            tired: "fa-tired"
+        };
+
+        // 心情名称映射
+        const moodNames = {
+            happy: "开心",
+            calm: "平静",
+            sad: "难过",
+            anxious: "焦虑",
+            angry: "生气",
+            tired: "疲惫"
+        };
+
+        // 当前选中的心情
+        let currentMood = null;
+        let history = [];
+        let displayedItems = 5; // 默认显示的项目数量
+        let currentDeleteId = null; // 当前待删除的条目ID
+
+        // DOM 元素
+        const moodOptions = document.querySelectorAll('.mood-option');
+        const saveBtn = document.getElementById('save-btn');
+        const comfortBtn = document.getElementById('comfort-btn');
+        const comfortMessage = document.getElementById('comfort-message');
+        const historyList = document.getElementById('history-list');
+        const moodJournal = document.getElementById('mood-journal');
+        const showMoreBtn = document.getElementById('show-more-btn');
+        const historyCount = document.getElementById('history-count');
+        const searchInput = document.getElementById('search-input');
+        const filterBtn = document.getElementById('filter-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const shareModal = document.getElementById('share-modal');
+        const closeModal = document.getElementById('close-modal');
+        const shareUrl = document.getElementById('share-url');
+        const copyBtn = document.getElementById('copy-btn');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmCancel = document.getElementById('confirm-cancel');
+        const confirmDelete = document.getElementById('confirm-delete');
+        const confirmAllModal = document.getElementById('confirm-all-modal');
+        const confirmAllCancel = document.getElementById('confirm-all-cancel');
+        const confirmAllDelete = document.getElementById('confirm-all-delete');
+        const deleteAllBtn = document.getElementById('delete-all-btn');
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载历史记录
+            loadHistory();
+
+            // 心情选择事件
+            moodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除所有active类
+                    moodOptions.forEach(opt => opt.classList.remove('active'));
+
+                    // 添加active类到当前选项
+                    this.classList.add('active');
+
+                    // 设置当前心情
+                    currentMood = this.dataset.mood;
+
+                    // 生成安慰语
+                    generateComfortMessage(currentMood);
+                });
+            });
+
+            // 保存按钮事件
+            saveBtn.addEventListener('click', saveMoodEntry);
+
+            // 安慰按钮事件
+            comfortBtn.addEventListener('click', function() {
+                if (currentMood) {
+                    generateComfortMessage(currentMood);
+                } else {
+                    generateComfortMessage('default');
+                }
+            });
+
+            // 显示更多按钮事件
+            showMoreBtn.addEventListener('click', function() {
+                displayedItems += 5;
+                updateHistoryList();
+            });
+
+            // 搜索功能
+            searchInput.addEventListener('input', function() {
+                updateHistoryList();
+            });
+
+            // 筛选功能
+            filterBtn.addEventListener('click', function() {
+                alert('筛选功能将在后续版本中推出！');
+            });
+
+            // 分享按钮事件
+            shareBtn.addEventListener('click', showShareModal);
+
+            // 关闭弹窗事件
+            closeModal.addEventListener('click', function() {
+                shareModal.style.display = 'none';
+            });
+
+            // 复制链接事件
+            copyBtn.addEventListener('click', copyShareUrl);
+
+            // 点击弹窗外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === shareModal) {
+                    shareModal.style.display = 'none';
+                }
+                if (event.target === confirmModal) {
+                    confirmModal.style.display = 'none';
+                }
+                if (event.target === confirmAllModal) {
+                    confirmAllModal.style.display = 'none';
+                }
+            });
+
+            // 删除确认事件
+            confirmCancel.addEventListener('click', function() {
+                confirmModal.style.display = 'none';
+            });
+
+            confirmDelete.addEventListener('click', function() {
+                if (currentDeleteId !== null) {
+                    deleteHistoryItem(currentDeleteId);
+                    confirmModal.style.display = 'none';
+                    currentDeleteId = null;
+                }
+            });
+
+            // 清空确认事件
+            confirmAllCancel.addEventListener('click', function() {
+                confirmAllModal.style.display = 'none';
+            });
+
+            confirmAllDelete.addEventListener('click', function() {
+                deleteAllHistory();
+                confirmAllModal.style.display = 'none';
+            });
+
+            // 清空记录按钮事件
+            deleteAllBtn.addEventListener('click', function() {
+                if (history.length > 0) {
+                    confirmAllModal.style.display = 'flex';
+                } else {
+                    alert('没有可删除的记录');
+                }
+            });
+
+            // 加载URL中的分享数据
+            loadSharedDataFromUrl();
+        });
+
+        // 生成安慰语
+        function generateComfortMessage(moodType) {
+            const messages = moodType in comfortMessages ?
+                comfortMessages[moodType] :
+                comfortMessages.default;
+
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const message = messages[randomIndex];
+
+            // 创建多段落消息
+            const paragraphs = message.split('。').filter(p => p.trim() !== '');
+            let html = '';
+
+            paragraphs.forEach(p => {
+                html += `<p>${p.trim()}。</p>`;
+            });
+
+            comfortMessage.innerHTML = html;
+        }
+
+        // 保存心情记录
+        function saveMoodEntry() {
+            if (!currentMood) {
+                alert('请先选择你的心情');
+                return;
+            }
+
+            const journalText = moodJournal.value.trim();
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            const timeStr = now.toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const entry = {
+                id: Date.now(),
+                mood: currentMood,
+                journal: journalText,
+                date: `${dateStr} ${timeStr}`
+            };
+
+            // 添加到历史记录
+            history.unshift(entry);
+
+            // 保存到本地存储
+            saveHistory();
+
+            // 更新UI
+            updateHistoryList();
+
+            // 重置表单
+            moodJournal.value = '';
+            moodOptions.forEach(opt => opt.classList.remove('active'));
+            currentMood = null;
+
+            // 显示成功消息
+            showSuccessMessage();
+        }
+
+        // 显示成功消息
+        function showSuccessMessage(message = '心情记录已保存！') {
+            const successMsg = document.createElement('div');
+            successMsg.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background: #4ade80; color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; display: flex; align-items: center;">
+                    <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 1.5rem;"></i>
+                    <div>${message}</div>
+                </div>
+            `;
+            document.body.appendChild(successMsg);
+
+            // 3秒后移除
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        // 更新历史记录列表
+        function updateHistoryList() {
+            // 更新记录数量显示
+            historyCount.textContent = `共 ${history.length} 条记录`;
+
+            if (history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-book-open"></i>
+                        <p>还没有心情记录<br>开始记录你的心情吧</p>
+                    </div>
+                `;
+                showMoreBtn.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            const searchTerm = searchInput.value.toLowerCase();
+
+            // 筛选和排序历史记录
+            const filteredHistory = history.filter(entry => {
+                return entry.journal.toLowerCase().includes(searchTerm) ||
+                       moodNames[entry.mood].toLowerCase().includes(searchTerm);
+            });
+
+            // 显示数量控制
+            const itemsToShow = Math.min(displayedItems, filteredHistory.length);
+
+            for (let i = 0; i < itemsToShow; i++) {
+                const entry = filteredHistory[i];
+                const journalText = entry.journal || '';
+                const hasLongText = journalText.length > 100;
+
+                html += `
+                    <div class="history-item ${hasLongText ? 'collapsed' : ''}" data-id="${entry.id}">
+                        <button class="delete-btn" data-id="${entry.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <div class="history-header">
+                            <div class="mood-indicator">
+                                <i class="fas ${moodIcons[entry.mood]}"></i>
+                                ${moodNames[entry.mood]}
+                            </div>
+                            <div class="date">${entry.date}</div>
+                        </div>
+                        ${journalText ? `<div class="history-content">${journalText}</div>` : ''}
+                        ${hasLongText ? `
+                            <button class="toggle-content-btn">
+                                <span>展开全文</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            historyList.innerHTML = html;
+
+            // 更新"显示更多"按钮状态
+            if (filteredHistory.length > displayedItems) {
+                showMoreBtn.style.display = 'block';
+                showMoreBtn.innerHTML = `<i class="fas fa-chevron-down"></i> 显示更多 (${filteredHistory.length - displayedItems})`;
+            } else {
+                showMoreBtn.style.display = 'none';
+            }
+
+            // 如果没有记录显示
+            if (filteredHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-search"></i>
+                        <p>没有找到匹配的记录<br>尝试其他搜索关键词</p>
+                    </div>
+                `;
+            }
+
+            // 为展开/收起按钮添加事件
+            document.querySelectorAll('.toggle-content-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const historyItem = this.closest('.history-item');
+                    if (historyItem.classList.contains('collapsed')) {
+                        historyItem.classList.remove('collapsed');
+                        this.innerHTML = '<span>收起</span><i class="fas fa-chevron-up"></i>';
+                        this.classList.add('expanded');
+                    } else {
+                        historyItem.classList.add('collapsed');
+                        this.innerHTML = '<span>展开全文</span><i class="fas fa-chevron-down"></i>';
+                        this.classList.remove('expanded');
+                    }
+                });
+            });
+
+            // 为删除按钮添加事件
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    currentDeleteId = id;
+
+                    // 设置确认消息
+                    const entry = history.find(item => item.id === id);
+                    const message = `您确定要删除这条心情记录吗？<br><br>
+                        <strong>${entry.date} - ${moodNames[entry.mood]}</strong><br>
+                        ${entry.journal ? entry.journal.substring(0, 50) + (entry.journal.length > 50 ? '...' : '') : ''}`;
+
+                    document.getElementById('confirm-message').innerHTML = message;
+                    confirmModal.style.display = 'flex';
+                });
+            });
+        }
+
+        // 删除单条历史记录
+        function deleteHistoryItem(id) {
+            history = history.filter(item => item.id !== id);
+            saveHistory();
+            updateHistoryList();
+            showSuccessMessage('心情记录已删除');
+        }
+
+        // 清空所有历史记录
+        function deleteAllHistory() {
+            history = [];
+            saveHistory();
+            updateHistoryList();
+            showSuccessMessage('所有记录已清空');
+        }
+
+        // 保存历史记录到本地存储
+        function saveHistory() {
+            localStorage.setItem('moodHistory', JSON.stringify(history));
+        }
+
+        // 从本地存储加载历史记录
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('moodHistory');
+            if (savedHistory) {
+                history = JSON.parse(savedHistory);
+                updateHistoryList();
+            }
+        }
+
+        // 显示分享弹窗
+        function showShareModal() {
+            if (history.length === 0) {
+                alert('请先添加一些心情记录再分享！');
+                return;
+            }
+
+            // 生成分享链接
+            generateShareUrl();
+
+            // 显示弹窗
+            shareModal.style.display = 'flex';
+        }
+
+        // 生成分享链接
+        function generateShareUrl() {
+            // 创建分享数据
+            const shareData = {
+                app: "暖心陪伴",
+                version: "1.0",
+                timestamp: new Date().getTime(),
+                data: history
+            };
+
+            // 转换为JSON字符串
+            const jsonStr = JSON.stringify(shareData);
+
+            // 编码为Base64
+            const encodedData = btoa(encodeURIComponent(jsonStr));
+
+            // 生成完整URL
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrlStr = `${baseUrl}?share=${encodedData}`;
+
+            // 显示在弹窗中
+            shareUrl.textContent = shareUrlStr;
+            shareUrl.dataset.url = shareUrlStr;
+        }
+
+        // 复制分享链接
+        function copyShareUrl() {
+            const url = shareUrl.dataset.url;
+            navigator.clipboard.writeText(url).then(() => {
+                // 显示复制成功提示
+                const originalText = copyBtn.textContent;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+
+                // 2秒后恢复原状
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.innerHTML = '复制';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制链接');
+            });
+        }
+
+        // 从URL加载分享数据
+        function loadSharedDataFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareParam = urlParams.get('share');
+
+            if (shareParam) {
+                try {
+                    // 解码Base64
+                    const decodedJson = decodeURIComponent(atob(shareParam));
+
+                    // 解析JSON
+                    const sharedData = JSON.parse(decodedJson);
+
+                    // 确认数据格式正确
+                    if (sharedData.app === "暖心陪伴" && Array.isArray(sharedData.data)) {
+                        if (confirm('检测到分享的心情记录，是否加载？')) {
+                            history = sharedData.data;
+                            saveHistory();
+                            updateHistoryList();
+
+                            // 清除URL参数
+                            window.history.replaceState({}, document.title, window.location.pathname);
+
+                            // 显示成功消息
+                            showSuccessMessage('成功加载分享的心情记录！');
+                        }
+                    }
+                } catch (e) {
+                    console.error('解析分享数据失败:', e);
+                }
+            }
+        }
+
+        // 初始化时生成默认安慰语
+        generateComfortMessage('default');
+
+        // 添加示例数据
+        window.addEventListener('load', function() {
+            if (history.length === 0) {
+                const sampleEntries = [
+                    {
+                        id: 1,
+                        mood: 'happy',
+                        journal: '今天阳光真好，和朋友一起去公园野餐，聊了很多开心的事情，感觉整个人都充满了能量！',
+                        date: '2023-07-20 14:30'
+                    },
+                    {
+                        id: 2,
+                        mood: 'calm',
+                        journal: '晚上泡了一杯茶，坐在窗边看书，窗外下着小雨，感觉内心特别平静。',
+                        date: '2023-07-19 20:15'
+                    },
+                    {
+                        id: 3,
+                        mood: 'sad',
+                        journal: '今天听到一个不太好的消息，心情有点低落。但我知道这只是暂时的，会好起来的。',
+                        date: '2023-07-18 18:45'
+                    },
+                    {
+                        id: 4,
+                        mood: 'anxious',
+                        journal: '明天有个重要的会议，虽然准备得很充分，但还是有点紧张。深呼吸，我可以的！',
+                        date: '2023-07-17 22:10'
+                    },
+                    {
+                        id: 5,
+                        mood: 'tired',
+                        journal: '连续加班好几天了，感觉身体有点吃不消。周末一定要好好休息一下。',
+                        date: '2023-07-16 21:20'
+                    },
+                    {
+                        id: 6,
+                        mood: 'happy',
+                        journal: '项目终于顺利完成，团队一起庆祝了！付出总有回报，这种成就感真好。',
+                        date: '2023-07-15 19:30'
+                    },
+                    {
+                        id: 7,
+                        mood: 'angry',
+                        journal: '遇到一个非常不讲理的人，浪费了我很多时间。不过现在冷静下来了，不值得为这种事生气。',
+                        date: '2023-07-14 16:50'
+                    }
+                ];
+
+                history = sampleEntries;
+                saveHistory();
+                updateHistoryList();
+            }
+        });
+    </script>
+</body>
+</html>
